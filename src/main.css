@@ -1,0 +1,20 @@
+html,
+body {
+  height: 100vh;
+}
+
+.cell {
+  cursor: crosshair;
+}
+
+.board-container {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.finished-msg {
+  color: #dc3545;
+}
