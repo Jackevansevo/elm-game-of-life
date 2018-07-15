@@ -1,17 +1,15 @@
 module Main exposing (..)
 
-import Html exposing (program)
-import Time exposing (Time, second, millisecond, every)
-import Keyboard
-
-
 -- Project imports
 
+import Html exposing (program)
+import Keyboard
 import Model exposing (Model, initialModel)
 import Msgs exposing (..)
+import Task
+import Time exposing (Time, every, millisecond, second)
 import Update exposing (update)
 import View exposing (view)
-import Task
 
 
 {- TODO:

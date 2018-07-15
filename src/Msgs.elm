@@ -14,11 +14,12 @@ type Msg
     | Tick Time
     | TogglePlaying
     | KeyMsg Keyboard.KeyCode
-    | AlterSpeed Float
+    | IncreaseSpeed
+    | DecreaseSpeed
     | ScrambleBoard
     | SetSeed Time
     | ClearBoard
     | UpdateProbability String
-    | UpdateCols String
-    | UpdateRows String
-    | UpdateSpeed String
+    | UpdateColsInput String
+    | UpdateRowsInput String
+    | ResizeBoard

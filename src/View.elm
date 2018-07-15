@@ -50,7 +50,7 @@ playPauseBtn model =
 
 gameOverMsg : Html Msg
 gameOverMsg =
-    div [ class "jumbotron jumbotron-fluid" ]
+    div [ class "jumbotron" ]
         [ div [ class "container" ]
             [ h1 [ class "display-4 text-danger" ] [ text "Game Over" ]
             , hr [ class "my-4" ] []
@@ -96,7 +96,7 @@ increaseSpeedBtn model =
     button
         [ type_ "button"
         , class "btn btn-lg btn-light"
-        , onClick (AlterSpeed 0.5)
+        , onClick IncreaseSpeed
         , title "Increase Speed"
         ]
         [ i [ class "fas fa-fast-forward" ] [] ]
@@ -107,7 +107,7 @@ decreaseSpeedBtn model =
     button
         [ type_ "button"
         , class "btn btn-lg btn-light"
-        , onClick (AlterSpeed 2)
+        , onClick DecreaseSpeed
         , title "Decrease Speed"
         ]
         [ i [ class "fas fa-fast-backward" ] [] ]
@@ -146,77 +146,62 @@ resetBtn =
         [ i [ class "fas fa-undo pr-2" ] [], text "Reset" ]
 
 
-gitHubLink : Html Msg
-gitHubLink =
-    a
-        [ attribute "role" "button"
-        , class "btn btn-dark btn-block"
-        , title "Github link"
-        , href "https://www.github.com"
-        ]
-        [ i [ class "fab fa-github pr-2" ] [], text "View on Github" ]
-
-
 infoSection : Model -> Html Msg
 infoSection model =
-    ul [ class "list-group my-2" ]
+    ul [ class "list-group my-1" ]
         [ li [ class "list-group-item d-flex justify-content-between align-items-center list-group-item-action" ]
             [ text "Speed"
             , span [ class "badge badge-secondary badge-pill" ]
-                [ text (toString model.speed) ]
+                [ text ("x" ++ toString (1000 / model.speed)) ]
             ]
         , li [ class "list-group-item d-flex justify-content-between align-items-center list-group-item-action" ]
             [ text "Generation"
             , span [ class "badge badge-secondary badge-pill" ]
                 [ text (toString model.generation) ]
             ]
-        , li [ class "list-group-item d-flex justify-content-between align-items-center list-group-item-action" ]
-            [ text "Alive probability"
-            , span [ class "badge badge-secondary badge-pill" ]
-                [ text (toString model.probability ++ "%") ]
-            ]
         ]
 
 
-boardDimensionsForm : Model -> Html Msg
-boardDimensionsForm model =
-    div [ class "card card-body my-2" ]
+resizeBoardForm : Model -> Html Msg
+resizeBoardForm model =
+    div [ class "card card-body my-1 pt-1 pb-2" ]
         [ Html.form []
             [ div [ class "form-row" ]
                 [ div [ class "form-group col-md-6" ]
                     [ label [ class "col-form-label" ] [ text "Columns" ]
-                    , input [ class "form-control col", onInput UpdateCols ] []
+                    , input
+                        [ class "form-control col"
+                        , type_ "number"
+                        , value model.colInput
+                        , onInput UpdateColsInput
+                        ]
+                        []
                     ]
                 , div [ class "form-group col-md-6" ]
                     [ label [ class "col-form-label" ] [ text "Rows" ]
-                    , input [ class "form-control", onInput UpdateRows ] []
+                    , input
+                        [ class "form-control"
+                        , type_ "number"
+                        , value model.rowInput
+                        , onInput UpdateRowsInput
+                        ]
+                        []
                     ]
                 ]
-            ]
-        ]
-
-
-speedSlider : Model -> Html Msg
-speedSlider model =
-    div [ class "card card-body" ]
-        [ div [ class "form-group" ]
-            [ label [] [ text "Speed" ]
-            , input
-                [ onInput UpdateSpeed
-                , class "custom-range"
-                , type_ "range"
-                , Html.Attributes.min "0"
-                , Html.Attributes.max "100"
-                , Html.Attributes.step "0.5"
+            , button
+                [ type_ "button"
+                , class "btn btn-success btn-block"
+                , onClick ResizeBoard
+                , title "Resize"
                 ]
-                []
+                [ i [ class "fas fa-expand pr-2" ] [], text "Resize" ]
             ]
         ]
 
 
-probabilitySlider : Model -> Html Msg
-probabilitySlider model =
-    div [ class "card card-body" ]
+scrambleBoardForm : Model -> Html Msg
+scrambleBoardForm model =
+    div [ class "card card-body my-1 py-2" ]
         [ div [ class "form-group" ]
             [ label [] [ text "Probability" ]
             , input
@@ -233,28 +218,39 @@ probabilitySlider model =
         ]
 
 
+boardControlButtons : Html Msg
+boardControlButtons =
+    div [ class "my-1" ]
+        [ clearBoardBtn
+        , resetBtn
+        ]
+
+
+speedControlButtons : Model -> Html Msg
+speedControlButtons model =
+    div [ class "card card-body my-1" ]
+        [ div [ class "row justify-content-around" ]
+            [ decreaseSpeedBtn model
+            , previousStateBtn model
+            , playPauseBtn model
+            , nextStateBtn model
+            , increaseSpeedBtn model
+            ]
+        ]
+
+
 boardControls : Model -> Html Msg
 boardControls model =
-    div [ class "col-lg-3 col-md-6 col-sm-12 bg-light d-flex flex-column", style [ ( "height", "100vh" ) ] ]
-        [ div [ class "my-2" ]
-            [ div [ class "card card-body" ]
-                [ div [ class "row justify-content-around" ]
-                    [ decreaseSpeedBtn model
-                    , previousStateBtn model
-                    , playPauseBtn model
-                    , nextStateBtn model
-                    , increaseSpeedBtn model
-                    ]
-                ]
-            ]
-        , speedSlider model
-        , infoSection model
-        , div [ class "my-3", style [ ( "flex-grow", "1" ), ( "align-self", "flex-end" ) ] ]
-            [ probabilitySlider model
-            , boardDimensionsForm model
-            , clearBoardBtn
-            , resetBtn
-            , gitHubLink
+    div
+        [ class "col-lg-3 col-md-6 col-sm-12 bg-light"
+        , style [ ( "height", "100vh" ) ]
+        ]
+        [ div [ class "d-flex flex-column align-items-stretch justify-content-start thing" ]
+            [ speedControlButtons model
+            , scrambleBoardForm model
+            , resizeBoardForm model
+            , infoSection model
+            , boardControlButtons
             ]
         ]
 
@@ -293,18 +289,20 @@ view model =
 
         board =
             if model.finished then
-                gameOverMsg
+                div [ class "col-lg-9 col-md-6 col-sm-12 d-flex justify-content-center flex-column" ]
+                    [ gameOverMsg ]
             else
-                svg
-                    [ Svg.Attributes.width xDimension
-                    , Svg.Attributes.height yDimension
+                div [ class "col-lg-9 col-md-6 col-sm-12 board-container" ]
+                    [ svg
+                        [ Svg.Attributes.width xDimension
+                        , Svg.Attributes.height yDimension
+                        ]
+                        (List.concat (Array.toList (Array.indexedMap drawRow reversedBoard)))
                     ]
-                    (List.concat (Array.toList (Array.indexedMap drawRow reversedBoard)))
     in
     div [ class "container-fluid bg-succes", style [ ( "height", "100vh" ) ] ]
         [ div [ class "row" ]
             [ boardControls model
-            , div [ class "col-lg-9 col-md-6 col-sm-12 board-container" ]
-                [ board ]
+            , board
             ]
         ]

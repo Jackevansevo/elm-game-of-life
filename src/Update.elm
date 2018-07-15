@@ -10,7 +10,7 @@ import Grid exposing (get, map, set)
 import Model exposing (Model, initialModel)
 import Msgs exposing (..)
 import Random
-import Time exposing (millisecond)
+import Time exposing (second)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -25,25 +25,27 @@ update msg model =
             else
                 ( model, Cmd.none )
 
-        UpdateCols val ->
+        UpdateColsInput val ->
+            ( { model | colInput = val }, Cmd.none )
+
+        UpdateRowsInput val ->
+            ( { model | rowInput = val }, Cmd.none )
+
+        ResizeBoard ->
             let
                 newCols =
-                    String.toInt val |> Result.toMaybe |> Maybe.withDefault 50
+                    Result.withDefault 10 <| String.toInt model.colInput
 
-                newBoard =
-                    Board.emptyBoard model.rows newCols
-            in
-            ( { model | cols = newCols, board = newBoard }, Cmd.none )
-
-        UpdateRows val ->
-            let
                 newRows =
-                    String.toInt val |> Result.toMaybe |> Maybe.withDefault 50
-
-                newBoard =
-                    Board.emptyBoard newRows model.cols
+                    Result.withDefault 10 <| String.toInt model.rowInput
             in
-            ( { model | rows = newRows, board = newBoard }, Cmd.none )
+            ( { model
+                | board = Board.emptyBoard newCols newRows
+                , cols = newCols
+                , rows = newRows
+              }
+            , Cmd.none
+            )
 
         UpdateProbability val ->
             let
@@ -82,28 +84,47 @@ update msg model =
             , Cmd.none
             )
 
-        AlterSpeed increment ->
+        IncreaseSpeed ->
             let
-                newSpeed =
-                    model.speed * increment
-            in
-            if newSpeed == 4000 || newSpeed == 3.90625 then
-                ( model, Cmd.none )
-            else
-                let
-                    newSpeed =
-                        model.speed * increment * millisecond
-                in
-                ( { model | speed = newSpeed }, Cmd.none )
+                redrawFrequency =
+                    second / model.speed
 
-        UpdateSpeed val ->
-            let
-                newSpeed =
-                    String.toFloat val
-                        |> Result.toMaybe
-                        |> Maybe.withDefault 20
+                nextIncrement =
+                    case redrawFrequency of
+                        1 ->
+                            2.5
+
+                        10 ->
+                            25
+
+                        200 ->
+                            200
+
+                        _ ->
+                            redrawFrequency * 2
             in
-            ( { model | speed = newSpeed }, Cmd.none )
+            ( { model | speed = second / nextIncrement }, Cmd.none )
+
+        DecreaseSpeed ->
+            let
+                redrawFrequency =
+                    second / model.speed
+
+                nextIncrement =
+                    case redrawFrequency of
+                        2.5 ->
+                            1
+
+                        25 ->
+                            10
+
+                        0.25 ->
+                            0.25
+
+                        _ ->
+                            redrawFrequency / 2
+            in
+            ( { model | speed = second / nextIncrement }, Cmd.none )
 
         NextState ->
             let
