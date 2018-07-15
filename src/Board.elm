@@ -1,8 +1,8 @@
 module Board exposing (..)
 
 import Array exposing (Array)
-import Cell exposing (Cell, Coord)
 import Array.Utils
+import Cell exposing (Cell)
 import Grid exposing (Grid, get)
 import Random exposing (Generator, bool)
 
@@ -44,7 +44,7 @@ randomBoard seed rows cols probability =
                 List.map2 populateRows randomVals <|
                     Grid.toList (emptyBoard rows cols)
     in
-        ( newBoard, newSeed )
+    ( newBoard, newSeed )
 
 
 hasLiveCells : Board -> Bool
@@ -53,39 +53,39 @@ hasLiveCells board =
         rowHasLife row =
             Array.Utils.any isCellAlive row
     in
-        Array.Utils.any rowHasLife board
+    Array.Utils.any rowHasLife board
 
 
-getNeighbors : Cell -> Board -> List Cell
-getNeighbors cell board =
+getNeighbors : Int -> Int -> Board -> List Cell
+getNeighbors x y board =
     let
         pairs =
-            [ (Coord -1 -1)
-            , (Coord -1 0)
-            , (Coord -1 1)
-            , (Coord 0 1)
-            , (Coord 1 1)
-            , (Coord 1 0)
-            , (Coord 1 -1)
-            , (Coord 0 -1)
+            [ ( -1, -1 )
+            , ( -1, 0 )
+            , ( -1, 1 )
+            , ( 0, 1 )
+            , ( 1, 1 )
+            , ( 1, 0 )
+            , ( 1, -1 )
+            , ( 0, -1 )
             ]
 
-        findAdjacent cell coord =
-            get (cell.coords.x + coord.x) (cell.coords.y + coord.y) board
+        findAdjacent ( x, y ) ( x1, y1 ) =
+            get (x + x1) (y + y1) board
     in
-        List.filterMap identity (List.map (findAdjacent cell) pairs)
+    List.filterMap identity (List.map (findAdjacent ( x, y )) pairs)
 
 
-countNeighbors : Cell -> Board -> Int
-countNeighbors cell board =
-    List.length (List.filter (\c -> c.alive) (getNeighbors cell board))
+countNeighbors : Int -> Int -> Board -> Int
+countNeighbors x y board =
+    List.length (List.filter (\c -> c.alive) (getNeighbors x y board))
 
 
 emptyBoard : Int -> Int -> Board
 emptyBoard numRows numCols =
     let
-        cell x y =
-            (Cell False (Coord x y))
+        cell =
+            Cell False
     in
-        Array.initialize numRows
-            (\x -> (Array.initialize numCols (\y -> cell x y)))
+    Array.initialize numRows
+        (\x -> Array.initialize numCols (\y -> cell))

@@ -1,11 +1,8 @@
 module Tests exposing (..)
 
-import Test exposing (..)
+import Cell exposing (Cell)
 import Expect
-import Cell exposing (Cell, Coord)
-
-
--- Check out http://package.elm-lang.org/packages/elm-community/elm-test/latest to learn more about testing in Elm!
+import Test exposing (..)
 
 
 suite : Test
@@ -20,7 +17,7 @@ suite =
                 \_ ->
                     Expect.true "Expected all cells to live." <|
                         List.all identity
-                            [ (Cell.nextState True 2), (Cell.nextState True 3) ]
+                            [ Cell.nextState True 2, Cell.nextState True 3 ]
             , test "Any live cell with > 3 live neighbors dies" <|
                 \_ ->
                     Expect.false "Expected cell to die." (Cell.nextState True 4)

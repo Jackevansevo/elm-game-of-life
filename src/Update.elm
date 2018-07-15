@@ -1,8 +1,6 @@
 module Update exposing (..)
 
--- Project imports
-
-import Array exposing (Array)
+import Array exposing (push)
 import Array.Utils exposing (butLast, last)
 import Board exposing (Board)
 import Cell exposing (Cell)
@@ -68,21 +66,26 @@ update msg model =
             , Cmd.none
             )
 
-        ToggleCell cell ->
-            let
-                newCell =
-                    { cell | alive = not cell.alive }
+        ToggleCell x y ->
+            case Grid.get x y model.board of
+                Just cell ->
+                    let
+                        newCell =
+                            { cell | alive = not cell.alive }
 
-                newBoard =
-                    Grid.set cell.coords.x cell.coords.y newCell model.board
-            in
-            ( { model
-                | board = newBoard
-                , playing = False
-                , finished = False
-              }
-            , Cmd.none
-            )
+                        newBoard =
+                            Grid.set x y newCell model.board
+                    in
+                    ( { model
+                        | board = newBoard
+                        , playing = False
+                        , finished = False
+                      }
+                    , Cmd.none
+                    )
+
+                Nothing ->
+                    ( model, Cmd.none )
 
         IncreaseSpeed ->
             let
@@ -128,15 +131,15 @@ update msg model =
 
         NextState ->
             let
-                updateCell cell =
+                updateCell x y cell =
                     let
                         liveNeighbors =
-                            Board.countNeighbors cell model.board
+                            Board.countNeighbors x y model.board
                     in
                     { cell | alive = Cell.nextState cell.alive liveNeighbors }
 
                 newBoard =
-                    Grid.map updateCell model.board
+                    Grid.indexedMap updateCell model.board
             in
             if model.board == newBoard || Board.isEmpty newBoard then
                 ( { model

@@ -3,7 +3,7 @@ module Model exposing (..)
 import Array exposing (Array)
 import Board exposing (Board)
 import Random
-import Time exposing (Time, second)
+import Time exposing (second)
 
 
 type alias Model =
@@ -27,7 +27,7 @@ initialModel : Model
 initialModel =
     let
         ( rows, cols ) =
-            ( 10, 10 )
+            ( 50, 50 )
     in
     { board = Board.emptyBoard rows cols
     , rows = rows
@@ -39,7 +39,7 @@ initialModel =
     , history = Array.empty
     , generation = 0
     , debug = False
-    , speed = 1000
+    , speed = second
     , seed = Random.initialSeed 0
     , probability = 20
     }

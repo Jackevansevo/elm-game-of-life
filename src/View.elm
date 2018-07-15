@@ -1,9 +1,6 @@
 module View exposing (..)
 
--- Project imports
-
 import Array exposing (Array)
-import Array.Utils exposing (reverseArray)
 import Board
 import Html exposing (..)
 import Html.Attributes exposing (..)
@@ -261,31 +258,27 @@ view model =
         ( xDimension, yDimension ) =
             ( model.cols * 10 |> toString, model.rows * 10 |> toString )
 
-        reversedBoard =
-            Array.Utils.reverseArray model.board
+        drawCell rowIndex colIndex cell =
+            let
+                cellStyle =
+                    if cell.alive then
+                        "#17a2b8"
+                    else
+                        "#fff"
+            in
+            rect
+                [ Svg.Attributes.x (toString (colIndex * 10))
+                , Svg.Attributes.y (toString (rowIndex * 10))
+                , Svg.Attributes.width "10"
+                , Svg.Attributes.height "10"
+                , Svg.Attributes.fill cellStyle
+                , Svg.Attributes.stroke "#34495e"
+                , onClick (ToggleCell rowIndex colIndex)
+                ]
+                []
 
         drawRow rowIndex cells =
-            let
-                drawCell colIndex cell =
-                    let
-                        cellStyle =
-                            if cell.alive then
-                                "#17a2b8"
-                            else
-                                "#fff"
-                    in
-                    rect
-                        [ Svg.Attributes.x (toString (colIndex * 10))
-                        , Svg.Attributes.y (toString (rowIndex * 10))
-                        , Svg.Attributes.width "10"
-                        , Svg.Attributes.height "10"
-                        , Svg.Attributes.fill cellStyle
-                        , Svg.Attributes.stroke "#34495e"
-                        , onClick (ToggleCell cell)
-                        ]
-                        []
-            in
-            Array.toList (Array.indexedMap drawCell cells)
+            Array.toList (Array.indexedMap (drawCell rowIndex) cells)
 
         board =
             if model.finished then
@@ -297,7 +290,7 @@ view model =
                         [ Svg.Attributes.width xDimension
                         , Svg.Attributes.height yDimension
                         ]
-                        (List.concat (Array.toList (Array.indexedMap drawRow reversedBoard)))
+                        (List.concat (Array.toList (Array.indexedMap drawRow model.board)))
                     ]
     in
     div [ class "container-fluid bg-succes", style [ ( "height", "100vh" ) ] ]

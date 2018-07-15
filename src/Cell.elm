@@ -1,18 +1,12 @@
 module Cell exposing (..)
 
 
-type alias Coord =
-    { x : Int, y : Int }
-
-
 type alias Alive =
     Bool
 
 
 type alias Cell =
-    { alive : Alive
-    , coords : Coord
-    }
+    { alive : Alive }
 
 
 nextState : Bool -> Int -> Alive

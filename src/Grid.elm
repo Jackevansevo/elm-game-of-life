@@ -23,21 +23,32 @@ set x y val board =
         row =
             Array.get x board
     in
-        case row of
-            Just row ->
-                let
-                    newRow =
-                        Array.set y val row
-                in
-                    Array.set x newRow board
+    case row of
+        Just row ->
+            let
+                newRow =
+                    Array.set y val row
+            in
+            Array.set x newRow board
 
-            Nothing ->
-                board
+        Nothing ->
+            board
 
 
 map : (a -> b) -> Grid a -> Grid b
-map fn board =
-    Array.map (\x -> Array.map fn x) board
+map fn grid =
+    Array.map (\x -> Array.map fn x) grid
+
+
+indexedMap : (Int -> Int -> a -> b) -> Grid a -> Grid b
+indexedMap fn grid =
+    Array.indexedMap
+        (\rowIndex row ->
+            Array.indexedMap
+                (\colIndex cell -> fn rowIndex colIndex cell)
+                row
+        )
+        grid
 
 
 toList : Grid a -> List (List a)

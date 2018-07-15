@@ -7,7 +7,7 @@ import Time exposing (Time)
 
 type Msg
     = NoOp
-    | ToggleCell Cell
+    | ToggleCell Int Int
     | NextState
     | PrevState
     | ResetGame

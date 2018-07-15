@@ -1,7 +1,5 @@
 module Main exposing (..)
 
--- Project imports
-
 import Html exposing (program)
 import Keyboard
 import Model exposing (Model, initialModel)
@@ -10,12 +8,6 @@ import Task
 import Time exposing (Time, every, millisecond, second)
 import Update exposing (update)
 import View exposing (view)
-
-
-{- TODO:
-
-   - Specify dimensions of board
--}
 
 
 subscriptions : Model -> Sub Msg
