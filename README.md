@@ -1,4 +1,4 @@
-# Dependencies
+## Dependencies
 
     npm install -g elm create-elm-app
 
