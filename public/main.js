@@ -6337,7 +6337,8 @@ var $author$project$View$infoSection = function (model) {
 							]),
 						_List_fromArray(
 							[
-								$elm$html$Html$text('wew')
+								$elm$html$Html$text(
+								$elm$core$String$fromInt(model.generation))
 							]))
 					]))
 			]));

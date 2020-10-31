@@ -154,7 +154,7 @@ infoSection model =
         , li [ class "list-group-item d-flex justify-content-between align-items-center list-group-item-action" ]
             [ text "Generation"
             , span [ class "badge badge-secondary badge-pill" ]
-                [ text "wew" ]
+                [ text (String.fromInt model.generation) ]
             ]
         ]
 
