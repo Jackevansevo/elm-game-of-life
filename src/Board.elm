@@ -4,7 +4,7 @@ import Array exposing (Array)
 import Array.Utils
 import Cell exposing (Cell)
 import Grid exposing (Grid, get)
-import Random exposing (Generator, bool)
+import Random exposing (Generator)
 
 
 type alias Board =
@@ -70,8 +70,8 @@ getNeighbors x y board =
             , ( 0, -1 )
             ]
 
-        findAdjacent ( x, y ) ( x1, y1 ) =
-            get (x + x1) (y + y1) board
+        findAdjacent ( x1, y1 ) ( x2, y2 ) =
+            get (x1 + x2) (y1 + y2) board
     in
     List.filterMap identity (List.map (findAdjacent ( x, y )) pairs)
 

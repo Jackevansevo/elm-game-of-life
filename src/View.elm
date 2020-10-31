@@ -149,12 +149,12 @@ infoSection model =
         [ li [ class "list-group-item d-flex justify-content-between align-items-center list-group-item-action" ]
             [ text "Speed"
             , span [ class "badge badge-secondary badge-pill" ]
-                [ text ("x" ++ toString (1000 / model.speed)) ]
+                [ text "wew" ]
             ]
         , li [ class "list-group-item d-flex justify-content-between align-items-center list-group-item-action" ]
             [ text "Generation"
             , span [ class "badge badge-secondary badge-pill" ]
-                [ text (toString model.generation) ]
+                [ text "wew" ]
             ]
         ]
 
@@ -240,7 +240,7 @@ boardControls : Model -> Html Msg
 boardControls model =
     div
         [ class "col-lg-3 col-md-6 col-sm-12 bg-light"
-        , style [ ( "height", "100vh" ) ]
+        , style "height" "100vh"
         ]
         [ div [ class "d-flex flex-column align-items-stretch justify-content-start thing" ]
             [ speedControlButtons model
@@ -256,7 +256,7 @@ view : Model -> Html Msg
 view model =
     let
         ( xDimension, yDimension ) =
-            ( model.cols * 10 |> toString, model.rows * 10 |> toString )
+            ( model.cols * 10 |> String.fromInt, model.rows * 10 |> String.fromInt )
 
         drawCell rowIndex colIndex cell =
             let
@@ -267,8 +267,8 @@ view model =
                         "#fff"
             in
             rect
-                [ Svg.Attributes.x (toString (colIndex * 10))
-                , Svg.Attributes.y (toString (rowIndex * 10))
+                [ Svg.Attributes.x (String.fromInt (colIndex * 10))
+                , Svg.Attributes.y (String.fromInt (rowIndex * 10))
                 , Svg.Attributes.width "10"
                 , Svg.Attributes.height "10"
                 , Svg.Attributes.fill cellStyle
@@ -293,7 +293,7 @@ view model =
                         (List.concat (Array.toList (Array.indexedMap drawRow model.board)))
                     ]
     in
-    div [ class "container-fluid bg-succes", style [ ( "height", "100vh" ) ] ]
+    div [ class "container-fluid bg-succes", style "height" "100vh" ]
         [ div [ class "row" ]
             [ boardControls model
             , board

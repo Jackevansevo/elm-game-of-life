@@ -24,10 +24,10 @@ set x y val board =
             Array.get x board
     in
     case row of
-        Just row ->
+        Just thisRow ->
             let
                 newRow =
-                    Array.set y val row
+                    Array.set y val thisRow
             in
             Array.set x newRow board
 

@@ -1,8 +1,6 @@
 module Msgs exposing (..)
 
 import Cell exposing (Cell)
-import Keyboard
-import Time exposing (Time)
 
 
 type Msg
@@ -11,13 +9,12 @@ type Msg
     | NextState
     | PrevState
     | ResetGame
-    | Tick Time
+    | Tick Int
     | TogglePlaying
-    | KeyMsg Keyboard.KeyCode
     | IncreaseSpeed
     | DecreaseSpeed
     | ScrambleBoard
-    | SetSeed Time
+    | SetSeed Int
     | ClearBoard
     | UpdateProbability String
     | UpdateColsInput String

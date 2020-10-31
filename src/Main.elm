@@ -1,28 +1,28 @@
 module Main exposing (..)
 
-import Html exposing (program)
-import Keyboard
+import Browser
 import Model exposing (Model, initialModel)
 import Msgs exposing (..)
 import Task
-import Time exposing (Time, every, millisecond, second)
+import Time exposing (every)
 import Update exposing (update)
 import View exposing (view)
 
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    if not model.finished && model.playing then
-        Sub.batch [ every model.speed Tick, Keyboard.downs KeyMsg ]
-    else
-        Keyboard.downs KeyMsg
+        Sub.none
 
+init : () -> (Model, Cmd Msg)
+init _ =
+  ( initialModel
+  , Cmd.none
+  )
 
-main : Program Never Model Msg
 main =
-    Html.program
-        { view = view
-        , init = ( initialModel, Task.perform Msgs.SetSeed Time.now )
-        , update = update
-        , subscriptions = subscriptions
-        }
+  Browser.element
+    { init = init
+    , update = update
+    , subscriptions = subscriptions
+    , view = view
+    }

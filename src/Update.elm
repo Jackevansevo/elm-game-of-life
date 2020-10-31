@@ -8,14 +8,13 @@ import Grid exposing (get, map, set)
 import Model exposing (Model, initialModel)
 import Msgs exposing (..)
 import Random
-import Time exposing (second)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         SetSeed time ->
-            ( { model | seed = Random.initialSeed (round time) }, Cmd.none )
+            ( { model | seed = Random.initialSeed time }, Cmd.none )
 
         Tick _ ->
             if model.playing then
@@ -32,10 +31,10 @@ update msg model =
         ResizeBoard ->
             let
                 newCols =
-                    Result.withDefault 10 <| String.toInt model.colInput
+                    Maybe.withDefault 10 (String.toInt model.colInput)
 
                 newRows =
-                    Result.withDefault 10 <| String.toInt model.rowInput
+                    Maybe.withDefault 10 (String.toInt model.rowInput)
             in
             ( { model
                 | board = Board.emptyBoard newCols newRows
@@ -48,7 +47,7 @@ update msg model =
         UpdateProbability val ->
             let
                 newProbability =
-                    String.toInt val |> Result.toMaybe |> Maybe.withDefault 20
+                    Maybe.withDefault 10 (String.toInt val)
             in
             ( { model | probability = newProbability }, Cmd.none )
 
@@ -88,46 +87,10 @@ update msg model =
                     ( model, Cmd.none )
 
         IncreaseSpeed ->
-            let
-                redrawFrequency =
-                    second / model.speed
-
-                nextIncrement =
-                    case redrawFrequency of
-                        1 ->
-                            2.5
-
-                        10 ->
-                            25
-
-                        200 ->
-                            200
-
-                        _ ->
-                            redrawFrequency * 2
-            in
-            ( { model | speed = second / nextIncrement }, Cmd.none )
+            ( model, Cmd.none )
 
         DecreaseSpeed ->
-            let
-                redrawFrequency =
-                    second / model.speed
-
-                nextIncrement =
-                    case redrawFrequency of
-                        2.5 ->
-                            1
-
-                        25 ->
-                            10
-
-                        0.25 ->
-                            0.25
-
-                        _ ->
-                            redrawFrequency / 2
-            in
-            ( { model | speed = second / nextIncrement }, Cmd.none )
+            ( model, Cmd.none )
 
         NextState ->
             let
@@ -166,9 +129,9 @@ update msg model =
                     Array.Utils.pop model.history
             in
             case prevBoard of
-                Just prevBoard ->
+                Just board ->
                     ( { model
-                        | board = prevBoard
+                        | board = board
                         , history = newHistory
                         , generation = model.generation - 1
                         , finished = False
@@ -193,19 +156,6 @@ update msg model =
             , Cmd.none
             )
 
-        KeyMsg code ->
-            case code of
-                32 ->
-                    update TogglePlaying model
-
-                39 ->
-                    update NextState model
-
-                37 ->
-                    update PrevState model
-
-                _ ->
-                    ( model, Cmd.none )
 
         _ ->
             ( model, Cmd.none )

@@ -3,7 +3,6 @@ module Model exposing (..)
 import Array exposing (Array)
 import Board exposing (Board)
 import Random
-import Time exposing (second)
 
 
 type alias Model =
@@ -32,14 +31,14 @@ initialModel =
     { board = Board.emptyBoard rows cols
     , rows = rows
     , cols = cols
-    , rowInput = toString rows
-    , colInput = toString cols
+    , rowInput = "50"
+    , colInput = "50"
     , playing = False
     , finished = False
     , history = Array.empty
     , generation = 0
     , debug = False
-    , speed = second
+    , speed = 1
     , seed = Random.initialSeed 0
     , probability = 20
     }
