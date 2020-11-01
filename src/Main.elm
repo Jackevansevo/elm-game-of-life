@@ -3,6 +3,7 @@ module Main exposing (..)
 import Browser
 import Model exposing (Model, initialModel)
 import Msgs exposing (..)
+import Random
 import Task
 import Time exposing (every)
 import Update exposing (update)
@@ -11,18 +12,20 @@ import View exposing (view)
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-        Sub.none
+    Time.every model.speed Tick
 
-init : () -> (Model, Cmd Msg)
-init _ =
-  ( initialModel
-  , Cmd.none
-  )
+
+init : Int -> ( Model, Cmd Msg )
+init now =
+    ( initialModel (Random.initialSeed now)
+    , Cmd.none
+    )
+
 
 main =
-  Browser.element
-    { init = init
-    , update = update
-    , subscriptions = subscriptions
-    , view = view
-    }
+    Browser.element
+        { init = init
+        , update = update
+        , subscriptions = subscriptions
+        , view = view
+        }

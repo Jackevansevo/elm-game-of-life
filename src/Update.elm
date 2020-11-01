@@ -8,17 +8,16 @@ import Grid exposing (get, map, set)
 import Model exposing (Model, initialModel)
 import Msgs exposing (..)
 import Random
+import Time
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        SetSeed time ->
-            ( { model | seed = Random.initialSeed time }, Cmd.none )
-
         Tick _ ->
             if model.playing then
                 update NextState model
+
             else
                 ( model, Cmd.none )
 
@@ -55,7 +54,7 @@ update msg model =
             ( { model | playing = not model.playing }, Cmd.none )
 
         ResetGame ->
-            ( initialModel, Cmd.none )
+            ( initialModel (Random.initialSeed 0), Cmd.none )
 
         ClearBoard ->
             ( { model
@@ -87,10 +86,24 @@ update msg model =
                     ( model, Cmd.none )
 
         IncreaseSpeed ->
-            ( model, Cmd.none )
+            if model.speed == 1000 then
+                ( { model | speed = 500 }, Cmd.none )
+
+            else if model.speed == 500 then
+                ( { model | speed = 250 }, Cmd.none )
+
+            else
+                ( model, Cmd.none )
 
         DecreaseSpeed ->
-            ( model, Cmd.none )
+            if model.speed == 250 then
+                ( { model | speed = 500 }, Cmd.none )
+
+            else if model.speed == 500 then
+                ( { model | speed = 1000 }, Cmd.none )
+
+            else
+                ( model, Cmd.none )
 
         NextState ->
             let
@@ -114,6 +127,7 @@ update msg model =
                   }
                 , Cmd.none
                 )
+
             else
                 ( { model
                     | board = newBoard
@@ -155,7 +169,6 @@ update msg model =
               }
             , Cmd.none
             )
-
 
         _ ->
             ( model, Cmd.none )

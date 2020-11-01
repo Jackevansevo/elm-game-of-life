@@ -20,18 +20,21 @@ playPauseBtn model =
         btnClass =
             if model.playing then
                 "btn btn-danger btn-lg"
+
             else
                 "btn btn-success btn-lg"
 
         btnTitle =
             if model.playing then
                 "Pause"
+
             else
                 "Pause"
 
         btnIcon =
             if model.playing then
                 "fas fa-pause"
+
             else
                 "fas fa-play"
     in
@@ -145,15 +148,26 @@ resetBtn =
 
 infoSection : Model -> Html Msg
 infoSection model =
+    let
+        speed =
+            if model.speed == 1000 then
+                "normal"
+
+            else if model.speed == 500 then
+                "fast"
+
+            else
+                "very fast"
+    in
     ul [ class "list-group my-1" ]
         [ li [ class "list-group-item d-flex justify-content-between align-items-center list-group-item-action" ]
             [ text "Speed"
-            , span [ class "badge badge-secondary badge-pill" ]
-                [ text "wew" ]
+            , span []
+                [ text speed ]
             ]
         , li [ class "list-group-item d-flex justify-content-between align-items-center list-group-item-action" ]
             [ text "Generation"
-            , span [ class "badge badge-secondary badge-pill" ]
+            , span []
                 [ text (String.fromInt model.generation) ]
             ]
         ]
@@ -200,7 +214,7 @@ scrambleBoardForm : Model -> Html Msg
 scrambleBoardForm model =
     div [ class "card card-body my-1 py-2" ]
         [ div [ class "form-group" ]
-            [ label [] [ text "Probability" ]
+            [ label [] [ text "Density" ]
             , input
                 [ onInput UpdateProbability
                 , class "custom-range"
@@ -263,6 +277,7 @@ view model =
                 cellStyle =
                     if cell.alive then
                         "#17a2b8"
+
                     else
                         "#fff"
             in
@@ -284,6 +299,7 @@ view model =
             if model.finished then
                 div [ class "col-lg-9 col-md-6 col-sm-12 d-flex justify-content-center flex-column" ]
                     [ gameOverMsg ]
+
             else
                 div [ class "col-lg-9 col-md-6 col-sm-12 board-container" ]
                     [ svg

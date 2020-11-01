@@ -22,23 +22,29 @@ type alias Model =
     }
 
 
-initialModel : Model
-initialModel =
+initialModel : Random.Seed -> Model
+initialModel initialSeed =
     let
         ( rows, cols ) =
             ( 50, 50 )
+
+        probability =
+            20
+
+        ( randomBoard, seed ) =
+            Board.randomBoard initialSeed rows cols probability
     in
-    { board = Board.emptyBoard rows cols
+    { board = randomBoard
     , rows = rows
     , cols = cols
-    , rowInput = "50"
-    , colInput = "50"
+    , rowInput = String.fromInt rows
+    , colInput = String.fromInt cols
     , playing = False
     , finished = False
     , history = Array.empty
     , generation = 0
     , debug = False
-    , speed = 1
-    , seed = Random.initialSeed 0
-    , probability = 20
+    , speed = 1000
+    , seed = seed
+    , probability = probability
     }
